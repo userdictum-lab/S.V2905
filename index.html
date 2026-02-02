@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saro</title>
+
+<style>
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#f4d6dc,#e6b7c1);
+  overflow:hidden;
+  color:white;
+}
+
+.container{
+  text-align:center;
+  animation:fadeIn 1.2s ease;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+h1{font-weight:500;}
+
+button{
+  padding:10px 22px;
+  font-size:15px;
+  margin:10px;
+  border:none;
+  border-radius:7px;
+  cursor:pointer;
+  transition:0.3s;
+  background:#b84c6b;
+  color:white;
+  position:absolute;
+}
+
+button:hover{transform:scale(1.07);}
+
+input{
+  padding:8px;
+  border-radius:6px;
+  border:none;
+  font-size:15px;
+}
+
+#hint{margin-top:10px;font-size:13px;opacity:0.8;}
+
+.now-playing{
+  position:fixed;
+  bottom:15px;
+  font-size:13px;
+  opacity:0.85;
+  font-style:italic;
+  animation:softPulse 3s ease-in-out infinite;
+}
+
+/* ✨ Soft pulse effect */
+@keyframes softPulse{
+  0%{transform:scale(1); opacity:0.75;}
+  50%{transform:scale(1.05); opacity:1;}
+  100%{transform:scale(1); opacity:0.75;}
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(15px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.envelope{
+  width:220px;
+  height:140px;
+  background:white;
+  position:relative;
+  margin-top:25px;
+  cursor:pointer;
+  border-radius:8px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#b84c6b;
+  font-size:14px;
+  transition:0.6s;
+}
+
+.flap{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#f8e4e8;
+  clip-path:polygon(0 0,100% 0,50% 60%);
+  transition:0.6s;
+}
+
+.envelope.open .flap{
+  transform:rotateX(180deg);
+  transform-origin:top;
+}
+
+.letter{
+  display:none;
+  margin-top:20px;
+  max-width:500px;
+  line-height:1.6;
+  background:rgba(255,255,255,0.18);
+  padding:20px;
+  border-radius:12px;
+  animation:fadeIn 1s ease;
+}
+
+.heart{
+  position:fixed;
+  color:white;
+  animation:floatUp 8s linear infinite;
+  opacity:0.35;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(100vh); opacity:0;}
+  to{transform:translateY(-10vh); opacity:0.4;}
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" loop>
+  <source src="Amjed.m4a" type="audio/mp4">
+</audio>
+
+<audio id="openSound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-paper-slide-1530.mp3" type="audio/mpeg">
+</audio>
+
+<div class="now-playing" id="nowPlaying" style="display:none;">
+  🎵 Now Playing: For Sârõ — Amjed
+</div>
+
+<div id="passwordPage" class="container">
+  <h1>Enter Password</h1>
+  <input type="password" id="passwordInput" placeholder="Password">
+  <br><br>
+  <button style="position:relative" onclick="checkPassword()">Enter</button>
+  <div id="hint">Hint: Best Day on our life 😇</div>
+</div>
+
+<div id="mainPage" class="container" style="display:none;">
+  <h1>Will you be my Valentine?</h1>
+  <button id="yesBtn" style="left:40%; top:60%;">Yes</button>
+  <button id="noBtn" style="left:55%; top:60%;">No</button>
+</div>
+
+<div id="messagePage" class="container" style="display:none;">
+  <h1>Best decision you made ever 💖</h1>
+
+  <div class="envelope" id="envelope" onclick="openLetter()">
+    <div class="flap"></div>
+    click here if you're interested 🙃❤️
+  </div>
+
+  <div class="letter" id="letter">
+    Saro…<br><br>
+
+    If you are reading this right now, it means you chose “Yes” — and now you're listening to something I created just for this moment.<br><br>
+
+    This piece playing in the background is called <b>“For Sârõ”</b>, composed by <b>Amjed</b>.<br><br>
+
+    It carries the calm I feel when I think of you, the softness of quiet evenings, and the honesty of simple emotions.<br><br>
+
+    I didn’t want anything loud or exaggerated — just something sincere.<br><br>
+
+    And just like this melody, I hope what starts here feels natural, warm, and real.<br><br>
+
+    Happy Valentine’s Day ❤️
+  </div>
+</div>
+
+<script>
+function checkPassword(){
+  const input=document.getElementById("passwordInput").value;
+  if(input==="2905"){
+    document.getElementById("passwordPage").style.display="none";
+    document.getElementById("mainPage").style.display="flex";
+    document.getElementById("bgMusic").play();
+    document.getElementById("nowPlaying").style.display="block";
+  }else{
+    alert("Wrong password");
+  }
+}
+
+const noBtn=document.getElementById("noBtn");
+const yesBtn=document.getElementById("yesBtn");
+
+noBtn.addEventListener("mouseenter",()=>{
+  const x=Math.random()*(window.innerWidth-100);
+  const y=Math.random()*(window.innerHeight-50);
+  noBtn.style.left=x+"px";
+  noBtn.style.top=y+"px";
+});
+
+yesBtn.addEventListener("click",()=>{
+  document.getElementById("mainPage").style.display="none";
+  document.getElementById("messagePage").style.display="flex";
+  createHearts();
+});
+
+function openLetter(){
+  document.getElementById("envelope").classList.add("open");
+  document.getElementById("letter").style.display="block";
+  document.getElementById("openSound").play();
+}
+
+function createHearts(){
+  setInterval(()=>{
+    const heart=document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML="❤";
+    heart.style.left=Math.random()*100+"vw";
+    heart.style.fontSize=(12+Math.random()*8)+"px";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),8000);
+  },1200);
+}
+</script>
+
+</body>
+</html>
