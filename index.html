@@ -3,260 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Saro</title>
-
-<style>
-body{
-  margin:0;
-  font-family:'Segoe UI',sans-serif;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:linear-gradient(135deg,#f4d6dc,#e6b7c1);
-  transition:background 1.5s ease;
-  color:white;
-  text-align:center;
-  overflow-x:hidden;
-}
-
-.deep-bg{
-  background:linear-gradient(135deg,#d8a7b1,#b76e79);
-}
-
-.container{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:20px;
-  width:100%;
-  max-width:700px;
-}
-
-input{
-  padding:10px;
-  border-radius:6px;
-  border:none;
-  font-size:15px;
-  margin-top:10px;
-}
-
-button{
-  padding:10px 22px;
-  font-size:15px;
-  border:none;
-  border-radius:7px;
-  cursor:pointer;
-  transition:0.3s;
-  background:#b84c6b;
-  color:white;
-}
-
-button:hover{transform:scale(1.07);}
-
-#errorMsg{
-  font-size:13px;
-  margin-top:8px;
-  opacity:0.8;
-}
-
-.buttons{
-  position:relative;
-  width:100%;
-  height:200px;
-  margin-top:20px;
-}
-
-#yesBtn,#noBtn{
-  position:absolute;
-}
-
-#yesBtn{left:35%;top:60%;}
-#noBtn{left:55%;top:60%;}
-
-.try-box{
-  position:absolute;
-  left:55%;
-  top:40%;
-  transform:translateX(-50%);
-  background:rgba(255,255,255,0.2);
-  padding:8px 12px;
-  border-radius:8px;
-  font-size:13px;
-}
-
-.envelope{
-  width:230px;
-  height:140px;
-  background:white;
-  margin-top:25px;
-  cursor:pointer;
-  border-radius:8px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.15);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:#b84c6b;
-  font-size:14px;
-}
-
-.letter{
-  margin-top:20px;
-  max-width:600px;
-  line-height:1.7;
-  background:rgba(255,255,255,0.18);
-  padding:25px;
-  border-radius:14px;
-  text-align:left;
-  white-space:pre-line;
-}
-
-.signature{
-  margin-top:20px;
-  font-size:13px;
-  opacity:0.85;
-  text-align:center;
-}
-
-.note{
-  position:fixed;
-  font-size:14px;
-  opacity:0.2;
-  animation:float 8s linear infinite;
-}
-
-@keyframes float{
-  from{transform:translateY(100vh);}
-  to{transform:translateY(-10vh);}
-}
-</style>
+<title>For My Valentine</title>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<audio id="bgMusic" loop>
-  <source src="Amjed.m4a" type="audio/mp4">
-</audio>
+<!-- Password Screen -->
+<section id="passwordScreen" class="screen active">
+    <div class="card">
+        <h2>This page was made for one heart only…</h2>
+        <input type="password" id="passwordInput" placeholder="Enter the special date">
+        <button onclick="checkPassword()">Enter</button>
+        <p id="errorMessage"></p>
+    </div>
+</section>
 
-<!-- PASSWORD -->
-<div id="passwordPage" class="container">
-  <h2>Enter Password</h2>
-  <input type="password" id="passwordInput">
-  <button onclick="checkPassword()">Enter</button>
-  <div id="errorMsg"></div>
-  <p style="font-size:13px;opacity:0.8;">Hint: Best Day on our life 😇</p>
-</div>
+<!-- Question Screen -->
+<section id="questionScreen" class="screen">
+    <div class="card">
+        <h2>Will you be my Valentine? ❤️</h2>
+        <div class="buttons">
+            <button id="yesBtn" onclick="showMessage()">Yes 💖</button>
+            <button id="noBtn">No 😏</button>
+        </div>
+        <p id="noText"></p>
+    </div>
+</section>
 
-<!-- MAIN -->
-<div id="mainPage" class="container" style="display:none;">
-  <h2>Will you be my Valentine?</h2>
-  <div class="buttons">
-    <button id="yesBtn">Yes</button>
-    <button id="noBtn">No</button>
-    <div class="try-box" id="tryText">try your luck 😂</div>
-  </div>
-</div>
+<!-- Message Screen -->
+<section id="messageScreen" class="screen">
+    <div class="card messageCard">
+        <h2 id="mainTitle">Best decision you made ever 💖</h2>
+        <div id="loveMessage">
+            <!-- الرسالة الطويلة نحطها لاحقًا -->
+        </div>
+        <button onclick="showGifts()">I saved something for you 🎁</button>
+    </div>
+</section>
 
-<!-- MESSAGE -->
-<div id="messagePage" class="container" style="display:none;">
-  <h2>Best decision you made ever 💖</h2>
-  <div class="envelope" onclick="openLetter()">
-    click here if you're interested 🙃❤️
-  </div>
-  <div class="letter" id="letter"></div>
-  <div class="signature">
-    February 14, 2026<br>
-    <i>For Sârõ — Amjed</i>
-  </div>
-</div>
+<!-- Gifts Screen -->
+<section id="giftsScreen" class="screen">
+    <div class="card">
+        <h2>I saved something special for you…</h2>
+        <div class="giftGrid">
+            <button onclick="openGift(1)">gift no.1 ❤️</button>
+            <button onclick="openGift(2)">gift no.2 🌌</button>
+            <button onclick="openGift(3)">gift no.3 🪷</button>
+            <button onclick="openGift(4)">gift no.4 😁</button>
+        </div>
+        <div id="giftContent"></div>
+    </div>
+</section>
 
-<script>
-const bgMusic=document.getElementById("bgMusic");
-const errorMsg=document.getElementById("errorMsg");
-
-function checkPassword(){
-  const val=document.getElementById("passwordInput").value;
-  if(val==="2905"){
-    document.getElementById("passwordPage").style.display="none";
-    document.getElementById("mainPage").style.display="flex";
-    bgMusic.play();
-  }else{
-    errorMsg.innerText="Try again… you know it better than anyone 😉";
-  }
-}
-
-document.getElementById("passwordInput")
-.addEventListener("keypress",e=>{
-  if(e.key==="Enter") checkPassword();
-});
-
-let noCount=0;
-const noBtn=document.getElementById("noBtn");
-const yesBtn=document.getElementById("yesBtn");
-
-function moveNo(){
-  noCount++;
-  yesBtn.style.transform=`scale(${1+noCount*0.05})`;
-  if(noCount>=7){
-    noBtn.style.display="none";
-    document.getElementById("tryText").innerText="your luck has ended 🗡🙂";
-    return;
-  }
-  const x=Math.random()*(window.innerWidth-120);
-  const y=Math.random()*(window.innerHeight-120);
-  noBtn.style.left=x+"px";
-  noBtn.style.top=y+"px";
-}
-
-noBtn.addEventListener("mouseenter",moveNo);
-noBtn.addEventListener("click",moveNo);
-
-yesBtn.addEventListener("click",()=>{
-  document.getElementById("mainPage").style.display="none";
-  document.getElementById("messagePage").style.display="flex";
-  document.body.classList.add("deep-bg");
-  if(navigator.vibrate) navigator.vibrate(100);
-  window.scrollTo(0,0);
-});
-
-const messageText = `I waited until today to write this 💌
-so it would come after your exams — when your heart can finally rest and your mind can breathe 🌷✨
-
-If you are reading this, it means you chose “Yes”… and that alone makes this moment special 🤍
-
-This piece playing now is called "For Sârõ", composed by Amjed 🎹✨
-It carries the calm I feel when I think of you,
-the softness of quiet evenings,
-and the honesty of simple emotions.
-
-Your strength, your patience, and your dedication make me admire you deeply 🌸
-Loving you feels natural, warm, and real 💞
-
-Would you be my Valentine, Saro? ❤️`;
-
-function openLetter(){
-  const letter=document.getElementById("letter");
-  letter.innerHTML="";
-  let i=0;
-  function type(){
-    if(i<messageText.length){
-      letter.innerHTML+=messageText.charAt(i);
-      i++;
-      setTimeout(type,25);
-    }
-  }
-  type();
-}
-
-setInterval(()=>{
-  const note=document.createElement("div");
-  note.classList.add("note");
-  note.innerText="🎵";
-  note.style.left=Math.random()*100+"vw";
-  document.body.appendChild(note);
-  setTimeout(()=>note.remove(),8000);
-},4000);
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
