@@ -1,19 +1,18 @@
-const correctPassword = "2905";
-const bgMusic = document.getElementById("bgMusic");
+const correctPassword="2905";
+const bgMusic=document.getElementById("bgMusic");
 
 function switchScreen(from,to){
-    const fromEl=document.getElementById(from);
-    const toEl=document.getElementById(to);
-    fromEl.classList.remove("active");
-    setTimeout(()=>{toEl.classList.add("active"); bgMusic.play(); },300);
+    document.getElementById(from).classList.remove("active");
+    setTimeout(()=>document.getElementById(to).classList.add("active"),300);
 }
 
 function checkPassword(){
     const input=document.getElementById("passwordInput").value;
-    if(input===correctPassword){switchScreen("passwordScreen","questionScreen");}
-    else{document.getElementById("errorMessage").innerText="Not quite… but I know you remember it ";}
+    if(input===correctPassword){switchScreen("passwordScreen","questionScreen"); bgMusic.play();}
+    else{document.getElementById("errorMessage").innerText="Not quite… ";}
 }
 
+// No/Yes Buttons
 const noBtn=document.getElementById("noBtn");
 const noText=document.getElementById("noText");
 const firstHint=document.getElementById("firstHint");
@@ -25,29 +24,16 @@ noBtn.addEventListener("click",()=>{
     noBtn.style.position="absolute";
     noBtn.style.top=Math.random()*80+"%";
     noBtn.style.left=Math.random()*80+"%";
-    yesBtn.style.transform=`scale(${1+noCount*0.1})`;
-
-    const messages=[
-        "Are you sure?",
-        "Think again…",
-        "You can’t escape destiny ",
-        "Just press yes.",
-        "It’s getting obvious…",
-        "Last chance…",
-        "Okay fine "
-    ];
-
+    const messages=["Are you sure?","Think again…","You can’t escape destiny ","Just press yes.","It’s getting obvious…","Last chance…","Okay fine "];
     firstHint.style.display="none";
-
-    if(noCount<=messages.length){noText.innerText=messages[noCount-1];}
-    else{noBtn.style.display="none"; noText.innerText="You're luck has done ";}
+    noText.innerText=noCount<=messages.length?messages[noCount-1]:"You're luck has done ";
+    if(noCount>7) noBtn.style.display="none";
 });
 
-function showMessage(){
-    switchScreen("questionScreen","messageScreen");
-    if(navigator.vibrate){navigator.vibrate(200);}
-    showLoveText();
-}
+yesBtn.addEventListener("click",showMessage);
+
+// Message
+function showMessage(){switchScreen("questionScreen","messageScreen"); showLoveText();}
 
 function showLoveText(){
     const messageLines=[
@@ -76,47 +62,120 @@ function showLoveText(){
             if(index===messageLines.length-1){p.style.fontSize="1.3em";p.style.marginTop="15px";}
             p.innerText=line;
             container.appendChild(p);
-        },index*1200);
+            container.scrollTop=container.scrollHeight;
+        },index*700);
     });
 }
 
+// Gifts
 function showGifts(){switchScreen("messageScreen","giftsScreen");}
 
 function openGift(num){
     const giftContent=document.getElementById("giftContent");
-    giftContent.innerHTML=""; // reset
+    const canvas=document.getElementById("giftCanvas");
+    const ctx=canvas.getContext("2d");
+    canvas.width=giftContent.clientWidth;
+    canvas.height=giftContent.clientHeight;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    giftContent.innerHTML=""; giftContent.appendChild(canvas);
 
-    if(num===1){
-        giftContent.innerHTML=`<h3>Red Roses Bouquet </h3><p>If I could give you the world in flowers,<br> I still wouldn’t match your beauty.</p><canvas id="roseCanvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>`;
-        startRoseAnimation();
+    if(num===1){ // Red Roses
+        giftContent.innerHTML+="<h3>Red Roses Bouquet </h3><p>If I could give you the world in flowers, I still wouldn’t match your beauty.</p>";
+        rosesAnimation(ctx,canvas);
     }
-    else if(num===2){
-        giftContent.innerHTML=`<h3>Night Sky </h3><p>Every star tonight carries a wish for you.</p><canvas id="starsCanvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>`;
-        startStarsAnimation();
+    else if(num===2){ // Night Sky
+        giftContent.innerHTML+="<h3>Night Sky </h3><p>Every star tonight carries a wish for you.</p>";
+        starsAnimation(ctx,canvas);
     }
-    else if(num===3){
-        giftContent.innerHTML=`<h3>Blooming Lotus </h3><p style="opacity:0; transform:scale(0.5);" id="lotusText">With you, even silence feels warm.</p><canvas id="lotusCanvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>`;
-        startLotusAnimation();
+    else if(num===3){ // Lotus
+        giftContent.innerHTML+="<h3>Blooming Lotus </h3><p>With you, even silence feels warm.</p>";
+        lotusAnimation(ctx,canvas);
     }
-    else if(num===4){
-        giftContent.innerHTML=`<h3>It's Me </h3><p>Plot twist… It’s me. I’m your gift. </p><small>Limited edition. No refunds.</small><canvas id="heartsCanvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>`;
-        startHeartsAnimation();
+    else if(num===4){ // Fun Gift
+        giftContent.innerHTML+="<h3>It's Me </h3><p>Plot twist… It’s me. I’m your gift. </p>";
+        pulseTextAnimation(ctx,canvas,"It’s Me ");
     }
 }
 
-// ----- Gift Animations -----
-function startRoseAnimation(){ /* same as before */ 
-    const canvas=document.getElementById("roseCanvas");const ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;const petals=[];for(let i=0;i<50;i++){petals.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:5+Math.random()*5,speedY:1+Math.random()*2,speedX:(Math.random()-0.5)*1.5,color:"rgba(255,0,50,0.7)"});}function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);petals.forEach(p=>{p.y+=p.speedY;p.x+=p.speedX;if(p.y>canvas.height)p.y=-10;if(p.x>canvas.width)p.x=0;ctx.beginPath();ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill();});requestAnimationFrame(animate);}animate();
+// Example simple animations
+function rosesAnimation(ctx,canvas){
+    const petals=[];
+    for(let i=0;i<50;i++){
+        petals.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vy:1+Math.random()*2,r:5+Math.random()*5});
+    }
+    function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        petals.forEach(p=>{
+            ctx.beginPath();
+            ctx.arc(p.x,p.y,p.r,0,2*Math.PI);
+            ctx.fillStyle="red";
+            ctx.fill();
+            p.y+=p.vy;
+            if(p.y>canvas.height)p.y=-p.r;
+        });
+        requestAnimationFrame(draw);
+    }
+    draw();
 }
 
-function startStarsAnimation(){ /* same as before */ 
-    const canvas=document.getElementById("starsCanvas");const ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;const stars=[];for(let i=0;i<80;i++){stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*2,speed:0.1+Math.random()*0.3,alpha:Math.random()});}function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);stars.forEach(s=>{s.alpha+=0.01;if(s.alpha>1)s.alpha=0;ctx.beginPath();ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${s.alpha})`;ctx.fill();});requestAnimationFrame(animate);}animate();
+function starsAnimation(ctx,canvas){
+    const stars=[];
+    for(let i=0;i<100;i++){
+        stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:1+Math.random()*2,vy:0.1+Math.random()*0.3});
+    }
+    function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        stars.forEach(s=>{
+            ctx.beginPath();
+            ctx.arc(s.x,s.y,s.r,0,2*Math.PI);
+            ctx.fillStyle="white";
+            ctx.fill();
+            s.y+=s.vy;
+            if(s.y>canvas.height)s.y=0;
+        });
+        requestAnimationFrame(draw);
+    }
+    draw();
 }
 
-function startLotusAnimation(){ 
-    document.body.style.background="#ffd6e6";const text=document.getElementById("lotusText");let scale=0.5,opacity=0;const interval=setInterval(()=>{scale+=0.01;opacity+=0.02;text.style.transform=`scale(${scale})`;text.style.opacity=opacity;if(scale>=1)clearInterval(interval);},30);
+function lotusAnimation(ctx,canvas){
+    let scale=0;
+    function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.save();
+        ctx.translate(canvas.width/2,canvas.height/2);
+        ctx.scale(scale,scale);
+        ctx.beginPath();
+        ctx.moveTo(0,-30);
+        for(let i=0;i<6;i++){
+            ctx.rotate(Math.PI/3);
+            ctx.lineTo(0,-30);
+        }
+        ctx.fillStyle="pink";
+        ctx.fill();
+        ctx.restore();
+        scale+=0.01;
+        if(scale>1)scale=1;
+        requestAnimationFrame(draw);
+    }
+    draw();
 }
 
-function startHeartsAnimation(){ 
-    const canvas=document.getElementById("heartsCanvas");const ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;const hearts=[];setInterval(()=>{hearts.push({x:Math.random()*canvas.width,y:canvas.height+10,radius:5+Math.random()*5,speedY:1+Math.random()*2,alpha:Math.random()});},200);function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);hearts.forEach((h,i)=>{h.y-=h.speedY;ctx.beginPath();ctx.arc(h.x,h.y,h.radius,0,Math.PI*2);ctx.fillStyle=`rgba(255,0,77,${h.alpha})`;ctx.fill();if(h.y<-10)hearts.splice(i,1);});requestAnimationFrame(animate);}animate();
+function pulseTextAnimation(ctx,canvas,text){
+    let scale=0.5,direction=0.01;
+    function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.save();
+        ctx.translate(canvas.width/2,canvas.height/2);
+        ctx.scale(scale,scale);
+        ctx.fillStyle="yellow";
+        ctx.font="30px Arial";
+        ctx.textAlign="center";
+        ctx.fillText(text,0,0);
+        ctx.restore();
+        scale+=direction;
+        if(scale>1.2 || scale<0.5) direction*=-1;
+        requestAnimationFrame(draw);
+    }
+    draw();
 }

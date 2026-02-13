@@ -9,53 +9,55 @@
 <body>
 
 <audio id="bgMusic" loop>
-  <source src="ForSaro.m4a" type="audio/mp4">
+  <source src="Amjed.m4a" type="audio/mp4">
 </audio>
 
 <!-- Password Screen -->
 <section id="passwordScreen" class="screen active">
-    <div class="card">
-        <h2>This page was made for one heart only…</h2>
-        <input type="password" id="passwordInput" placeholder="Enter the special date">
-        <button onclick="checkPassword()">Enter</button>
-        <p id="errorMessage"></p>
-    </div>
+  <div class="card">
+    <h2>This page is just for you </h2>
+    <input type="password" id="passwordInput" placeholder="Enter the special date">
+    <button onclick="checkPassword()">Enter</button>
+    <p id="errorMessage"></p>
+  </div>
 </section>
 
 <!-- Question Screen -->
 <section id="questionScreen" class="screen">
-    <div class="card">
-        <h2>Will you be my Valentine? </h2>
-        <div class="buttons">
-            <button id="yesBtn" onclick="showMessage()">Yes </button>
-            <button id="noBtn">No </button>
-        </div>
-        <p id="noText"></p>
-        <p id="firstHint">Try your luck </p>
+  <div class="card">
+    <h2>Will you be my Valentine? </h2>
+    <div class="buttons">
+      <button id="yesBtn">Yes </button>
+      <button id="noBtn">No </button>
     </div>
+    <p id="noText"></p>
+    <p id="firstHint">Try your luck </p>
+  </div>
 </section>
 
 <!-- Message Screen -->
 <section id="messageScreen" class="screen">
-    <div class="card messageCard">
-        <h2 id="mainTitle">Best decision you made ever </h2>
-        <div id="loveMessage"></div>
-        <button onclick="showGifts()">I saved something for you </button>
-    </div>
+  <div class="card messageCard">
+    <h2 id="mainTitle">Best decision you made ever </h2>
+    <div id="loveMessage" class="scrollable"></div>
+    <button onclick="showGifts()">I saved something for you </button>
+  </div>
 </section>
 
 <!-- Gifts Screen -->
 <section id="giftsScreen" class="screen">
-    <div class="card">
-        <h2>I saved something special for you…</h2>
-        <div class="giftGrid">
-            <button onclick="openGift(1)">gift no.1 </button>
-            <button onclick="openGift(2)">gift no.2 </button>
-            <button onclick="openGift(3)">gift no.3 </button>
-            <button onclick="openGift(4)">gift no.4 </button>
-        </div>
-        <div id="giftContent"></div>
+  <div class="card">
+    <h2>I saved something special for you…</h2>
+    <div class="giftGrid">
+      <button onclick="openGift(1)">gift no.1 </button>
+      <button onclick="openGift(2)">gift no.2 </button>
+      <button onclick="openGift(3)">gift no.3 </button>
+      <button onclick="openGift(4)">gift no.4 </button>
     </div>
+    <div id="giftContent">
+      <canvas id="giftCanvas"></canvas>
+    </div>
+  </div>
 </section>
 
 <script src="script.js"></script>
